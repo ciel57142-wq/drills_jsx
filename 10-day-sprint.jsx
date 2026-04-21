@@ -1,0 +1,514 @@
+import { useState } from "react";
+
+const DAYS = [
+  {
+    day: 1,
+    title: "The Noticing Eye",
+    subtitle: "See before you speak",
+    skill: "Pattern recognition — the root skill under everything",
+    techniques: [
+      { id: "SA1", name: "Genuine Aside", cat: "Self-Amusement" },
+      { id: "SA6", name: "Amused Noticing", cat: "Self-Amusement" },
+    ],
+    why: "These two are pure observation→voice. No cleverness needed, no audience needed. They train the foundational muscle: noticing specific things and letting yourself react out loud.",
+    mission: {
+      internal: "Walk through your morning (commute, kitchen, office) and mentally tag 10 specific details that strike you. Not funny things — specific things. \"The barista has three pens but only uses one.\" \"That sign has been crooked for weeks.\" Write seeds in your phone notes.",
+      spoken: "Say 5 observations out loud in low-stakes moments. To yourself at the store, to a cashier, waiting for coffee. One line, then move on. No follow-up needed.",
+      examples: [
+        "\"Love that they put the tip jar right next to the 'self-service' sign.\"",
+        "\"That dog is running this entire park. Everyone else is just here.\"",
+      ],
+    },
+    checkpoint: "You notice 3+ things per hour without trying. Your phone notes have 8+ entries by end of day. You catch yourself almost saying something out loud before you consciously decide to.",
+  },
+  {
+    day: 2,
+    title: "Your Inner World",
+    subtitle: "You have ongoing thoughts. Share them.",
+    skill: "Establishing that you have a perspective that exists independent of this moment",
+    techniques: [
+      { id: "SA2", name: "The Bit You're Running", cat: "Self-Amusement" },
+      { id: "SA5", name: "Honest Preference Drop", cat: "Self-Amusement" },
+    ],
+    why: "Both techniques show you have an inner life with opinions and narratives. The Bit is a worldview you've committed to. The Preference Drop is a truth you don't defend. Together they say: I think about things, and I'm not waiting for permission to share.",
+    mission: {
+      internal: "Before leaving the house, decide on one Bit. Commit to it all day. (\"I'm tracking how many people check their phone within 10 seconds of sitting down.\" \"My theory is that everyone in this building has a secret lunch spot they won't share.\") Reference it in your head at least 5 times.",
+      spoken: "Drop 3 honest preferences with zero justification today. At lunch, with a coworker, wherever. \"I actually love Mondays. I know.\" Then stop talking. Let the silence sit.",
+      examples: [
+        "\"I've decided that every parking lot is just a slow-motion strategy game. I'm watching the meta develop.\"",
+        "\"I genuinely prefer gas station coffee. That's just where I am in life.\"",
+      ],
+    },
+    checkpoint: "You start a sentence with \"My theory is...\" or \"I've decided...\" and it doesn't feel like a bit — it feels like how you actually talk. Someone asks why you think that and you just shrug because you don't need them to agree.",
+  },
+  {
+    day: 3,
+    title: "The Unshakeable Frame",
+    subtitle: "Chaos happens. You're amused.",
+    skill: "Emotional composure through genuine entertainment, not suppression",
+    techniques: [
+      { id: "SA3", name: "Enjoyed Indifference", cat: "Self-Amusement" },
+      { id: "SA7", name: "Enjoyed Non-Reaction", cat: "Self-Amusement" },
+    ],
+    why: "These retrain your default response to annoyance and chaos. Instead of reacting or suppressing, you find the moment genuinely interesting. This is the technique that changes your vibe the most — people feel the calm.",
+    mission: {
+      internal: "Actively hunt for 3 annoying moments today (slow line, loud coworker, bad traffic). When they happen, consciously shift to nature-documentary mode. Narrate internally: \"And here we observe the commuter, 14 minutes into a standstill, beginning to question all prior life decisions.\"",
+      spoken: "When something chaotic happens around others, pause 2 full beats before any reaction. Then give it a one-word or short-phrase response with a micro-smile. \"Solid.\" \"Bold.\" \"There it is.\" Then return to what you were doing.",
+      examples: [
+        "Someone drops a tray in a restaurant. Everyone looks. You wait, then: \"Committed.\" Back to your food.",
+        "15-minute hold on a call: \"Truly incredible. This hold music is... a choice.\" (said with calm fascination)",
+      ],
+    },
+    checkpoint: "Something annoying happens and your first instinct is curiosity, not frustration. You catch yourself smiling at a delay instead of checking the time. Someone asks \"doesn't that bother you?\" and the honest answer is no.",
+  },
+  {
+    day: 4,
+    title: "The Callback & The Thread",
+    subtitle: "Your humor has continuity",
+    skill: "Temporal linking — connecting moments across time shows you're paying attention to your own experience",
+    techniques: [
+      { id: "SA4", name: "Self-Entertained Callback", cat: "Self-Amusement" },
+    ],
+    why: "This is where Self-Amusement gets its depth. Anyone can make one observation. Callbacks show you're living inside your own narrative. This also stacks with Day 2's Bit — your running theory gets evidence throughout the day.",
+    mission: {
+      internal: "Pick your best observation from the morning. Actively look for connections to it throughout the day. Write down every moment that \"supports the thesis.\" You're training the pattern of noticing echoes.",
+      spoken: "Use at least 2 callbacks today. They can be with the same person or different people. \"Okay this is related to my thing from earlier...\" or \"Further evidence:\" — said like you're building a case that only you care about.",
+      examples: [
+        "Morning: \"Everyone in this elevator is avoiding eye contact like it's a sport.\" Afternoon meeting where no one wants to go first: \"The elevator theory holds.\"",
+        "You noted a coworker's specific coffee order. Later they're indecisive about lunch: \"Interesting. Full conviction on coffee, total chaos on food. The data is building.\"",
+      ],
+    },
+    checkpoint: "You make a callback and it feels natural — not forced, not a performance. You notice yourself mentally filing things as \"this connects to earlier\" without trying. Someone laughs at a callback and you realize you didn't plan it for them.",
+  },
+  {
+    day: 5,
+    title: "Funhouse Mirror",
+    subtitle: "Same reality, bent sideways",
+    skill: "Reframing — taking what's normal and making it suddenly strange or epic",
+    techniques: [
+      { id: "PA1", name: "Absurd Escalation", cat: "Playful Absurdity" },
+      { id: "PA5", name: "Dramatic Narration", cat: "Playful Absurdity" },
+    ],
+    why: "Both inflate mundane moments — Escalation through stakes, Narration through tone. They share a core mechanic: treat something trivial as if it's monumental, with total commitment. No winking at the joke.",
+    mission: {
+      internal: "Mentally narrate 5 mundane moments in epic style throughout your day. Morning coffee, walking to your car, opening your laptop. Full David Attenborough. \"After months of preparation, the analyst approaches the spreadsheet. This is the moment.\"",
+      spoken: "Use Absurd Escalation at least 3 times in conversation. Inflate the stakes of something trivial with complete deadpan. The key is total sincerity — you deliver it like you believe it.",
+      examples: [
+        "Choosing where to eat lunch: \"This is the most important decision we'll make today. Maybe this week. I need everyone focused.\"",
+        "Walking into a meeting: \"And here we see the team, gathering for the ancient ritual. Tensions are high. The whiteboard awaits.\"",
+      ],
+    },
+    checkpoint: "You escalate something trivial and don't break character — you hold the deadpan for a full beat after. Someone laughs and you stay committed. The sincerity IS the funny part and you feel that instinctively.",
+  },
+  {
+    day: 6,
+    title: "Wrong Expert, Right Energy",
+    subtitle: "Confident analysis of the wrong thing entirely",
+    skill: "Frame-shifting — applying one domain's logic to another with full authority",
+    techniques: [
+      { id: "PA2", name: "The Misapplied Expert", cat: "Playful Absurdity" },
+      { id: "PA6", name: "The Fake Protocol", cat: "Playful Absurdity" },
+    ],
+    why: "Misapplied Expert and Fake Protocol both create authority out of nothing — one borrows it from the wrong field, the other invents rules from scratch. The shared skill is speaking with total confidence about something you just made up.",
+    mission: {
+      internal: "In every meeting or group interaction today, mentally analyze what's happening through the lens of a completely wrong field. Military strategy. Wildlife biology. Restaurant reviews. Architecture. Pick a different field each time.",
+      spoken: "Use Misapplied Expert twice and Fake Protocol once. Say them with zero hesitation, like you're sharing established knowledge.",
+      examples: [
+        "\"From a logistics perspective, this lunch order is a masterclass in supply chain failure.\"",
+        "\"Standard protocol in any elevator is the person closest to the buttons becomes temporary leader. That's you. Congratulations.\"",
+        "\"Architecturally, this open-plan office is designed for maximum awkward eye contact. Someone planned this.\"",
+      ],
+    },
+    checkpoint: "You say something with false authority and your delivery is so natural that someone almost takes you seriously for a second. The pause before they realize you're joking — that's the gap you're learning to create.",
+  },
+  {
+    day: 7,
+    title: "Reality Is Negotiable",
+    subtitle: "What if everything is actually something else",
+    skill: "Creative reframing and logic-breaking — seeing alternate explanations everywhere",
+    techniques: [
+      { id: "PA3", name: "The Alternate Universe", cat: "Playful Absurdity" },
+      { id: "PA4", name: "The Deadpan Non-Sequitur", cat: "Playful Absurdity" },
+      { id: "PA7", name: "The Sincere Absurd Question", cat: "Playful Absurdity" },
+    ],
+    why: "Three techniques, one core move: break the expected logic of a moment. Alternate Universe proposes a different reality. Non-Sequitur snaps the logic chain. Absurd Question invites them into the break. All three reward commitment and sincerity.",
+    mission: {
+      internal: "For every routine environment you enter today (office, store, gym), generate one alternate explanation for what's really going on. Write it down. \"What if this gym is actually a casting call and no one told us.\"",
+      spoken: "Use each technique once. One Alternate Universe theory dropped casually, one Non-Sequitur in conversation (normal statement → absurd conclusion → move on), one Sincere Absurd Question asked to someone like you've genuinely been wondering.",
+      examples: [
+        "\"What if this open office isn't about collaboration — it's a long-term social experiment and we're all subjects. Think about it.\" (then drop it)",
+        "\"The wifi here is really fast. Which means they're definitely hiding something.\"",
+        "\"Genuine question — do you think the people who schedule 4pm Friday meetings know what they're doing to us, or is it unconscious?\"",
+      ],
+    },
+    checkpoint: "You propose an alternate reality and explore it for 2-3 sentences without breaking. Someone says \"wait, what?\" and you hold the frame for a beat before moving on. You ask an absurd question and actually wait for their answer like it matters.",
+  },
+  {
+    day: 8,
+    title: "Two-Player Mode",
+    subtitle: "Now they're in the game",
+    skill: "Creating frames others can step into — the shift from solo to interactive",
+    techniques: [
+      { id: "PL1", name: "The Assumption Game", cat: "Playfulness" },
+      { id: "PL3", name: "The Invented Ranking", cat: "Playfulness" },
+      { id: "PL4", name: "The Conspiratorial Pull-In", cat: "Playfulness" },
+    ],
+    why: "These three all create a space the other person can enter. Assumption Game gives them something to correct. Invented Ranking gives them something to answer. Conspiratorial Pull-In makes them an ally. All three turn a monologue into a game.",
+    mission: {
+      internal: "In every interaction, silently run a cold read. \"This person is definitely a 'has a system for everything' type.\" \"That person is 'pretending they read the email' energy.\" You're building the muscle of confident, specific observation about people.",
+      spoken: "Use Assumption Game with one person (friend or coworker you're comfortable with). Use Invented Ranking with someone else. Use Conspiratorial Pull-In with a stranger or acquaintance in a shared situation (line, waiting room, elevator).",
+      examples: [
+        "\"You seem like someone who has very strong opinions about how to load a dishwasher.\" (wait for their reaction)",
+        "\"On a scale of 'I have a plan' to 'pure improvisation' — how are you approaching this week?\"",
+        "\"I think we're the only two people in this room who noticed the thermostat is set to 'arctic'.\"",
+      ],
+    },
+    checkpoint: "You make an assumption about someone and they light up correcting you — and the correction turns into a real conversation. You use an Invented Ranking and they actually think about their answer instead of brushing it off. The pull-in creates a \"we\" that lasts at least 2 exchanges.",
+  },
+  {
+    day: 9,
+    title: "The Volley",
+    subtitle: "Keep the ball in the air",
+    skill: "Responsive play — building on what they give you instead of resetting",
+    techniques: [
+      { id: "PL2", name: "The Tiny Challenge", cat: "Playfulness" },
+      { id: "PL5", name: "The Playful Reversal", cat: "Playfulness" },
+      { id: "PL6", name: "The Yes And Offer", cat: "Playfulness" },
+    ],
+    why: "Day 8 opened the door. Day 9 is about keeping the exchange alive. Tiny Challenge creates micro-tension. Reversal pokes their autopilot. Yes-And builds on their frame. All three require you to listen and respond, not just initiate.",
+    mission: {
+      internal: "In every conversation today, before you respond, ask yourself: \"What did they just hand me? How can I build on it or flip it?\" Train yourself to see every statement as an offer, not just information.",
+      spoken: "Use Playful Reversal when someone gives you a stock answer. Use Yes-And at least twice when someone makes any observation. Drop one Tiny Challenge in a comfortable moment.",
+      examples: [
+        "They say \"I'm fine, busy.\" → \"Busy is the safe answer. What's actually going on?\" (warm, not interrogative)",
+        "They say \"This place is always crowded.\" → \"Yes, and I think it's the same 15 people. I'm starting to recognize the rotation.\"",
+        "\"Okay, challenge: order something you've never tried here. Right now. No Googling.\"",
+      ],
+    },
+    checkpoint: "You reverse someone's stock answer and they pause, then give you a real one. A Yes-And volley goes 3+ exchanges deep. Someone takes your tiny challenge and you both end up laughing. The interaction has momentum you didn't have to force.",
+  },
+  {
+    day: 10,
+    title: "The Stack",
+    subtitle: "Everything at once — your actual personality now",
+    skill: "Fluid combination — chaining techniques in a single interaction without thinking about technique names",
+    techniques: [
+      { id: "PL7", name: "The Earned Nickname", cat: "Playfulness" },
+      { id: "ALL", name: "All 21 — Stacking", cat: "Integration" },
+    ],
+    why: "Earned Nickname is saved for last because it requires everything: you need to notice (Day 1), have a frame (Day 2), stay composed (Day 3), and be in a two-way exchange (Day 8-9) to give someone a name that lands. Today you also practice chaining: a Noticing that becomes an Escalation that becomes a Pull-In that earns a Nickname. That's one interaction, four techniques, zero conscious effort.",
+    mission: {
+      internal: "Stop thinking in technique names. Instead, just ask: \"What's amusing me right now? What's the game here? What did they just give me?\" Those three questions cover all 21 techniques. If you're asking them automatically, you've internalized the system.",
+      spoken: "Have at least 2 extended interactions (3+ minutes) where you use 3+ techniques fluidly. Don't plan which ones. Just stay in the three questions. Also: give at least one Earned Nickname based on something specific someone did.",
+      examples: [
+        "Coworker is agonizing over a decision → Noticing: \"You've been staring at that screen like it owes you money.\" → Escalation: \"This is clearly the most important moment of the quarter.\" → Nickname: \"You're a 'stare it into submission' decision-maker. Respect.\"",
+        "Stranger in line → Aside: \"Fascinating system they've got here.\" → Pull-In: \"I think we're witnessing something historical.\" → They respond → Yes-And: build on what they say → Callback to your earlier observation.",
+      ],
+    },
+    checkpoint: "You have a playful interaction and afterward you can't remember which techniques you used — you just know it was fun. Someone calls you funny and you realize you weren't trying to be. The gap between noticing and speaking is gone. You're not running a protocol anymore. This is just how you see the world.",
+  },
+];
+
+const catColors = {
+  "Self-Amusement": { bg: "rgba(232, 121, 59, 0.12)", text: "#d4652a", border: "#e8793b" },
+  "Playful Absurdity": { bg: "rgba(147, 91, 194, 0.12)", text: "#7b4db5", border: "#935bc2" },
+  "Playfulness": { bg: "rgba(56, 161, 132, 0.12)", text: "#2a8a6e", border: "#38a184" },
+  "Integration": { bg: "rgba(59, 130, 194, 0.12)", text: "#2e6fa0", border: "#3b82c2" },
+};
+
+function TechniquePill({ name, cat }) {
+  const c = catColors[cat] || catColors["Integration"];
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        padding: "3px 10px",
+        borderRadius: "20px",
+        fontSize: "12px",
+        fontWeight: 600,
+        background: c.bg,
+        color: c.text,
+        border: `1px solid ${c.border}`,
+        marginRight: "6px",
+        marginBottom: "6px",
+        letterSpacing: "0.01em",
+      }}
+    >
+      {name}
+    </span>
+  );
+}
+
+function CheckpointBox({ text }) {
+  return (
+    <div
+      style={{
+        marginTop: "20px",
+        padding: "16px 18px",
+        borderRadius: "10px",
+        background: "linear-gradient(135deg, rgba(56, 161, 132, 0.08), rgba(56, 161, 132, 0.03))",
+        borderLeft: "3px solid #38a184",
+        fontSize: "14px",
+        lineHeight: "1.6",
+        color: "var(--text-primary)",
+      }}
+    >
+      <div style={{ fontWeight: 700, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.08em", color: "#2a8a6e", marginBottom: "6px" }}>
+        ✓ Internalized When
+      </div>
+      {text}
+    </div>
+  );
+}
+
+function DayCard({ data, isOpen, onToggle }) {
+  const dayNum = String(data.day).padStart(2, "0");
+  return (
+    <div
+      style={{
+        marginBottom: "12px",
+        borderRadius: "14px",
+        border: isOpen ? "1.5px solid var(--border-active, #935bc2)" : "1px solid var(--border-color, rgba(120,120,140,0.15))",
+        background: isOpen ? "var(--card-bg-active, rgba(255,255,255,0.95))" : "var(--card-bg, rgba(255,255,255,0.7))",
+        overflow: "hidden",
+        transition: "all 0.25s ease",
+        boxShadow: isOpen ? "0 4px 24px rgba(0,0,0,0.06)" : "0 1px 4px rgba(0,0,0,0.03)",
+      }}
+    >
+      <button
+        onClick={onToggle}
+        style={{
+          width: "100%",
+          padding: "18px 22px",
+          display: "flex",
+          alignItems: "center",
+          gap: "16px",
+          border: "none",
+          background: "transparent",
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <div
+          style={{
+            minWidth: "44px",
+            height: "44px",
+            borderRadius: "12px",
+            background: isOpen
+              ? "linear-gradient(135deg, #935bc2, #7b4db5)"
+              : "linear-gradient(135deg, rgba(147,91,194,0.15), rgba(147,91,194,0.08))",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "15px",
+            fontWeight: 800,
+            color: isOpen ? "#fff" : "#7b4db5",
+            fontFamily: "'JetBrains Mono', 'SF Mono', 'Fira Code', monospace",
+            transition: "all 0.25s ease",
+          }}
+        >
+          {dayNum}
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--text-primary, #1a1a2e)", lineHeight: "1.3" }}>
+            {data.title}
+          </div>
+          <div style={{ fontSize: "13px", color: "var(--text-secondary, #6b6b80)", marginTop: "2px" }}>
+            {data.subtitle}
+          </div>
+        </div>
+        <div
+          style={{
+            fontSize: "18px",
+            color: "var(--text-secondary, #6b6b80)",
+            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.25s ease",
+          }}
+        >
+          ▾
+        </div>
+      </button>
+
+      {isOpen && (
+        <div style={{ padding: "0 22px 24px 22px" }}>
+          {/* Techniques */}
+          <div style={{ marginBottom: "16px" }}>
+            {data.techniques.map((t) => (
+              <TechniquePill key={t.id} name={t.name} cat={t.cat} />
+            ))}
+          </div>
+
+          {/* Skill */}
+          <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-primary, #1a1a2e)", marginBottom: "4px" }}>
+            Core Skill
+          </div>
+          <div style={{ fontSize: "14px", color: "var(--text-secondary, #6b6b80)", lineHeight: "1.55", marginBottom: "18px" }}>
+            {data.skill}
+          </div>
+
+          {/* Why these together */}
+          <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-primary, #1a1a2e)", marginBottom: "4px" }}>
+            Why These Together
+          </div>
+          <div style={{ fontSize: "14px", color: "var(--text-secondary, #6b6b80)", lineHeight: "1.55", marginBottom: "20px" }}>
+            {data.why}
+          </div>
+
+          {/* Missions */}
+          <div
+            style={{
+              padding: "18px",
+              borderRadius: "10px",
+              background: "var(--mission-bg, rgba(232, 121, 59, 0.05))",
+              border: "1px solid rgba(232, 121, 59, 0.12)",
+              marginBottom: "4px",
+            }}
+          >
+            <div style={{ fontWeight: 700, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.08em", color: "#d4652a", marginBottom: "12px" }}>
+              Missions
+            </div>
+
+            <div style={{ marginBottom: "14px" }}>
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-primary, #1a1a2e)", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                🧠 Internal Reps
+              </div>
+              <div style={{ fontSize: "14px", color: "var(--text-secondary, #6b6b80)", lineHeight: "1.6" }}>
+                {data.mission.internal}
+              </div>
+            </div>
+
+            <div style={{ marginBottom: "14px" }}>
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-primary, #1a1a2e)", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                🎤 Live Reps
+              </div>
+              <div style={{ fontSize: "14px", color: "var(--text-secondary, #6b6b80)", lineHeight: "1.6" }}>
+                {data.mission.spoken}
+              </div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-primary, #1a1a2e)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                💬 Example Lines
+              </div>
+              {data.mission.examples.map((ex, i) => (
+                <div
+                  key={i}
+                  style={{
+                    fontSize: "13.5px",
+                    color: "var(--text-primary, #1a1a2e)",
+                    fontStyle: "italic",
+                    padding: "8px 12px",
+                    background: "rgba(255,255,255,0.6)",
+                    borderRadius: "8px",
+                    marginBottom: i < data.mission.examples.length - 1 ? "6px" : 0,
+                    lineHeight: "1.5",
+                    borderLeft: "2px solid rgba(232,121,59,0.3)",
+                  }}
+                >
+                  {ex}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <CheckpointBox text={data.checkpoint} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function App() {
+  const [openDay, setOpenDay] = useState(0);
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
+        padding: "32px 16px",
+        maxWidth: "640px",
+        margin: "0 auto",
+        color: "var(--text-primary, #1a1a2e)",
+      }}
+    >
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet" />
+      <div style={{ marginBottom: "32px" }}>
+        <div
+          style={{
+            fontSize: "11px",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+            color: "#935bc2",
+            marginBottom: "8px",
+            fontFamily: "'JetBrains Mono', monospace",
+          }}
+        >
+          10-Day Sprint
+        </div>
+        <h1
+          style={{
+            fontSize: "28px",
+            fontWeight: 800,
+            lineHeight: "1.15",
+            margin: "0 0 10px 0",
+            color: "var(--text-primary, #1a1a2e)",
+          }}
+        >
+          Internalization Protocol
+        </h1>
+        <p style={{ fontSize: "14px", color: "var(--text-secondary, #6b6b80)", lineHeight: "1.55", margin: 0 }}>
+          21 techniques. 10 days. Each day has internal reps, live missions, and a clear checkpoint so you know when it's locked in. Tap a day to expand.
+        </p>
+
+        {/* Legend */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "16px" }}>
+          {Object.entries(catColors).filter(([k]) => k !== "Integration").map(([cat, c]) => (
+            <span
+              key={cat}
+              style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                padding: "3px 10px",
+                borderRadius: "20px",
+                background: c.bg,
+                color: c.text,
+                border: `1px solid ${c.border}`,
+              }}
+            >
+              {cat}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {DAYS.map((day, i) => (
+        <DayCard
+          key={day.day}
+          data={day}
+          isOpen={openDay === i}
+          onToggle={() => setOpenDay(openDay === i ? -1 : i)}
+        />
+      ))}
+
+      <div
+        style={{
+          marginTop: "24px",
+          padding: "20px",
+          borderRadius: "14px",
+          background: "linear-gradient(135deg, rgba(147,91,194,0.08), rgba(56,161,132,0.06))",
+          border: "1px solid rgba(147,91,194,0.12)",
+          fontSize: "14px",
+          color: "var(--text-secondary, #6b6b80)",
+          lineHeight: "1.6",
+        }}
+      >
+        <div style={{ fontWeight: 700, color: "var(--text-primary, #1a1a2e)", marginBottom: "6px" }}>
+          The One Rule
+        </div>
+        If you're not amusing yourself, you're doing it wrong. Every technique is rooted in genuine enjoyment. If a day's focus feels forced, revisit a previous day instead — better to deepen something real than push through something fake. After Day 10, the three questions replace the system: <em>What's amusing me? What's the game here? What did they just give me?</em>
+      </div>
+    </div>
+  );
+}
